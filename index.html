@@ -256,6 +256,9 @@
       cursor: pointer;
       animation: popIn 0.56s cubic-bezier(0.2, 0.85, 0.25, 1);
       will-change: transform, opacity;
+      --spark: rgba(134, 200, 255, 0.95);
+      --spark-soft: rgba(134, 200, 255, 0.34);
+      --spark-trail: rgba(134, 200, 255, 0.18);
     }
 
     .game-card:nth-child(1) { animation-delay: 0.02s; }
@@ -371,6 +374,88 @@
       pointer-events: none;
     }
 
+    .spawn-fx {
+      position: absolute;
+      inset: -16%;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 5;
+      mix-blend-mode: screen;
+      opacity: 0;
+      animation: spawnFxReveal 0.8s ease-out forwards;
+    }
+
+    .spawn-halo,
+    .spawn-core,
+    .spawn-rays,
+    .spawn-glow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
+    .spawn-halo {
+      width: 104%;
+      height: 74%;
+      border: 1px solid var(--spark-soft);
+      box-shadow: 0 0 20px var(--spark-soft), inset 0 0 18px rgba(255,255,255,0.16);
+      animation: haloPulse 0.78s cubic-bezier(0.18, 0.8, 0.32, 1) forwards;
+    }
+
+    .spawn-core {
+      width: 44%;
+      height: 32%;
+      background: radial-gradient(circle, rgba(255,255,255,0.92) 0%, var(--spark) 34%, rgba(255,255,255,0) 78%);
+      filter: blur(2px);
+      animation: coreFlash 0.6s ease-out forwards;
+    }
+
+    .spawn-glow {
+      width: 130%;
+      height: 88%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, var(--spark-soft) 30%, rgba(255,255,255,0) 72%);
+      filter: blur(12px);
+      animation: glowFade 0.92s ease-out forwards;
+    }
+
+    .spawn-rays {
+      width: 128%;
+      height: 96%;
+      background: conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, var(--spark-trail) 16deg, rgba(255,255,255,0) 36deg, rgba(255,255,255,0) 88deg, var(--spark-trail) 100deg, rgba(255,255,255,0) 126deg, rgba(255,255,255,0) 188deg, var(--spark-trail) 206deg, rgba(255,255,255,0) 226deg, rgba(255,255,255,0) 276deg, var(--spark-trail) 292deg, rgba(255,255,255,0) 314deg, rgba(255,255,255,0) 360deg);
+      filter: blur(1px);
+      animation: raysSpin 0.92s ease-out forwards;
+    }
+
+    .spark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      margin: -5px 0 0 -5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.98) 0%, var(--spark) 42%, rgba(255,255,255,0) 76%);
+      box-shadow: 0 0 10px var(--spark), 0 0 18px var(--spark-soft);
+      animation: sparkBurst 0.82s cubic-bezier(0.16, 0.78, 0.24, 1) forwards;
+      animation-delay: var(--delay, 0s);
+      transform: rotate(var(--angle)) translateY(0) scale(0.5);
+    }
+
+    .spark::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 3px;
+      height: 22px;
+      transform: translate(-50%, -85%);
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0));
+      opacity: 0.66;
+    }
+
     .burn-layer {
       position: absolute;
       inset: 0;
@@ -401,6 +486,43 @@
     .flame.f1 { left: 8%; }
     .flame.f2 { left: 34%; width: 34%; animation-delay: 0.04s; }
     .flame.f3 { left: 62%; width: 26%; animation-delay: 0.08s; }
+
+    .game-card[data-rarity="common"] {
+      --spark: rgba(164, 228, 255, 0.88);
+      --spark-soft: rgba(175, 230, 255, 0.34);
+      --spark-trail: rgba(196, 235, 255, 0.18);
+    }
+
+    .game-card[data-rarity="standard"] {
+      --spark: rgba(134, 244, 188, 0.94);
+      --spark-soft: rgba(118, 210, 166, 0.32);
+      --spark-trail: rgba(123, 234, 183, 0.18);
+    }
+
+    .game-card[data-rarity="recon"] {
+      --spark: rgba(124, 191, 255, 0.94);
+      --spark-soft: rgba(92, 169, 255, 0.34);
+      --spark-trail: rgba(133, 203, 255, 0.18);
+    }
+
+    .game-card[data-rarity="rare"] {
+      --spark: rgba(196, 142, 255, 0.96);
+      --spark-soft: rgba(174, 114, 255, 0.34);
+      --spark-trail: rgba(207, 166, 255, 0.2);
+    }
+
+    .game-card[data-rarity="gold"] {
+      --spark: rgba(255, 218, 118, 0.98);
+      --spark-soft: rgba(255, 204, 95, 0.34);
+      --spark-trail: rgba(255, 225, 152, 0.2);
+    }
+
+    .game-card[data-rarity="epic"],
+    .game-card[data-rarity="legendary"] {
+      --spark: rgba(255, 106, 126, 0.98);
+      --spark-soft: rgba(255, 82, 106, 0.34);
+      --spark-trail: rgba(255, 165, 184, 0.2);
+    }
 
     .bg-white { background: linear-gradient(180deg, #fcfcfc 0%, #e7eaee 100%); }
     .bg-green { background: linear-gradient(180deg, #78b98f 0%, #497a59 100%); }
@@ -573,6 +695,42 @@
       0% { opacity: 1; transform: scale(1); filter: brightness(1); }
       35% { opacity: 1; transform: translateY(-2px) scale(1.02); filter: brightness(1.18); }
       100% { opacity: 0; transform: translateY(16px) scale(0.86); filter: brightness(0.7); }
+    }
+
+    @keyframes spawnFxReveal {
+      0% { opacity: 0; }
+      18% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes haloPulse {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+      36% { opacity: 0.95; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.18); }
+    }
+
+    @keyframes coreFlash {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.22); }
+      26% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+    }
+
+    @keyframes glowFade {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.72); }
+      28% { opacity: 0.9; }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    @keyframes raysSpin {
+      0% { opacity: 0; transform: translate(-50%, -50%) rotate(-18deg) scale(0.52); }
+      22% { opacity: 0.9; }
+      100% { opacity: 0; transform: translate(-50%, -50%) rotate(28deg) scale(1.06); }
+    }
+
+    @keyframes sparkBurst {
+      0% { opacity: 0; transform: rotate(var(--angle)) translateY(0) scale(0.25); }
+      16% { opacity: 1; }
+      100% { opacity: 0; transform: rotate(var(--angle)) translateY(var(--travel, -122px)) scale(1.05); }
     }
 
     @keyframes flameRise {
@@ -902,6 +1060,44 @@
       return icons[type] || `<div style="font-size:28px;color:#fff">?</div>`;
     }
 
+    function getRarityToken(item) {
+      if (item.bg === 'bg-red') return item.rarity === '传说' ? 'legendary' : 'epic';
+      if (item.bg === 'bg-gold') return 'gold';
+      if (item.bg === 'bg-purple') return 'rare';
+      if (item.bg === 'bg-blue') return 'recon';
+      if (item.bg === 'bg-green') return 'standard';
+      return 'common';
+    }
+
+    function spawnFxMarkup() {
+      const particleConfig = [
+        ['-80deg', '-108px', '0s'],
+        ['-42deg', '-126px', '0.04s'],
+        ['-14deg', '-98px', '0.01s'],
+        ['18deg', '-132px', '0.06s'],
+        ['48deg', '-112px', '0.02s'],
+        ['86deg', '-120px', '0.08s'],
+        ['122deg', '-96px', '0.03s'],
+        ['152deg', '-128px', '0.07s'],
+        ['196deg', '-106px', '0.05s'],
+        ['228deg', '-122px', '0.09s'],
+        ['264deg', '-100px', '0.02s'],
+        ['302deg', '-130px', '0.06s']
+      ];
+      const sparks = particleConfig.map(([angle, travel, delay]) => `
+        <span class="spark" style="--angle:${angle};--travel:${travel};--delay:${delay};"></span>
+      `).join('');
+      return `
+        <div class="spawn-fx" aria-hidden="true">
+          <span class="spawn-glow"></span>
+          <span class="spawn-rays"></span>
+          <span class="spawn-halo"></span>
+          <span class="spawn-core"></span>
+          ${sparks}
+        </div>
+      `;
+    }
+
     function renderCodex() {
       codexGrid.innerHTML = '';
       RED_ITEMS.forEach((item) => {
@@ -930,11 +1126,13 @@
       card.className = 'game-card';
       card.dataset.state = 'back';
       card.dataset.counted = 'false';
+      card.dataset.rarity = getRarityToken(item);
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
       card.setAttribute('aria-label', `${item.name} 卡牌`);
 
       card.innerHTML = `
+        ${spawnFxMarkup()}
         <div class="card-inner">
           <div class="card-face card-back tactical-frame"></div>
           <div class="card-face card-front tactical-frame ${item.bg}" lang="zh-CN">
@@ -980,6 +1178,11 @@
           activate();
         }
       });
+
+      const spawnFx = card.querySelector('.spawn-fx');
+      if (spawnFx) {
+        setTimeout(() => spawnFx.remove(), 980);
+      }
 
       return card;
     }

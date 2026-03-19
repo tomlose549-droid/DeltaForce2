@@ -370,8 +370,15 @@
     }
 
     .game-card.removing {
-      animation: fadeOut 0.42s ease forwards;
       pointer-events: none;
+      transform-origin: center bottom;
+      animation:
+        burnAway 0.78s cubic-bezier(0.22, 0.7, 0.22, 1) forwards,
+        emberShake 0.18s linear 4;
+    }
+
+    .game-card.removing .card-inner {
+      animation: charTilt 0.78s ease-out forwards;
     }
 
     .spawn-fx {
@@ -458,12 +465,12 @@
 
     .burn-layer {
       position: absolute;
-      inset: 0;
+      inset: -4%;
       pointer-events: none;
       opacity: 0;
       overflow: hidden;
-      border-radius: var(--radius);
-      z-index: 4;
+      border-radius: calc(var(--radius) + 4px);
+      z-index: 6;
       mix-blend-mode: screen;
     }
 
@@ -471,21 +478,102 @@
       opacity: 1;
     }
 
+    .burn-mask,
+    .heat-haze,
+    .ash-cloud,
+    .ember,
     .flame {
       position: absolute;
+      pointer-events: none;
+    }
+
+    .burn-mask {
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 50% 100%, rgba(255, 242, 186, 0.92) 0 10%, rgba(255, 162, 52, 0.9) 16%, rgba(255, 74, 21, 0.88) 28%, rgba(25, 9, 5, 0.96) 42%, rgba(6, 4, 4, 0.98) 58%, transparent 72%),
+        linear-gradient(180deg, transparent 0 18%, rgba(0, 0, 0, 0.1) 38%, rgba(10, 5, 3, 0.88) 74%, rgba(3, 3, 3, 1) 100%);
+      opacity: 0;
+      transform-origin: center bottom;
+      filter: blur(1px) saturate(1.35);
+    }
+
+    .game-card.removing .burn-mask {
+      animation: burnMaskSweep 0.78s cubic-bezier(0.18, 0.72, 0.2, 1) forwards;
+    }
+
+    .heat-haze {
+      inset: -10%;
+      background:
+        radial-gradient(circle at 50% 100%, rgba(255, 172, 76, 0.28) 0 18%, rgba(255, 110, 44, 0.18) 30%, rgba(255,255,255,0) 56%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 2px, rgba(255,255,255,0) 2px 10px);
+      opacity: 0;
+      filter: blur(7px);
+    }
+
+    .game-card.removing .heat-haze {
+      animation: heatHazeLift 0.72s ease-out forwards;
+    }
+
+    .ash-cloud {
+      left: 12%;
+      right: 12%;
+      bottom: 6%;
+      height: 34%;
+      background: radial-gradient(circle at 50% 60%, rgba(255, 178, 118, 0.32) 0 12%, rgba(75, 48, 43, 0.42) 30%, rgba(0, 0, 0, 0) 72%);
+      filter: blur(10px);
+      opacity: 0;
+    }
+
+    .game-card.removing .ash-cloud {
+      animation: ashBloom 0.68s ease-out forwards;
+    }
+
+    .flame {
       bottom: -12px;
       width: 30%;
       aspect-ratio: 0.62 / 1;
-      background: radial-gradient(circle at 50% 68%, rgba(255,245,182,0.95) 0 20%, rgba(255,163,58,0.95) 35%, rgba(255,78,23,0.85) 68%, rgba(255,0,0,0) 100%);
+      background: radial-gradient(circle at 50% 72%, rgba(255,245,182,0.98) 0 14%, rgba(255,199,102,0.96) 24%, rgba(255,138,42,0.94) 42%, rgba(255,72,18,0.82) 72%, rgba(255,0,0,0) 100%);
       border-radius: 50% 50% 55% 55%;
-      filter: blur(1px);
+      filter: blur(1.4px);
       transform-origin: bottom center;
-      animation: flameRise 0.5s ease-out forwards;
+      animation: flameRise 0.62s ease-out forwards;
     }
 
-    .flame.f1 { left: 8%; }
-    .flame.f2 { left: 34%; width: 34%; animation-delay: 0.04s; }
-    .flame.f3 { left: 62%; width: 26%; animation-delay: 0.08s; }
+    .flame::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 12%;
+      width: 36%;
+      height: 46%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 60%, rgba(255,255,255,0.95), rgba(255,224,140,0.6) 48%, rgba(255,255,255,0) 100%);
+      filter: blur(1px);
+      opacity: 0.78;
+    }
+
+    .flame.f1 { left: 2%; animation-delay: 0s; }
+    .flame.f2 { left: 22%; width: 26%; animation-delay: 0.05s; }
+    .flame.f3 { left: 40%; width: 34%; animation-delay: 0.02s; }
+    .flame.f4 { left: 64%; width: 24%; animation-delay: 0.08s; }
+    .flame.f5 { left: 78%; width: 20%; animation-delay: 0.12s; }
+
+    .ember {
+      left: 50%;
+      bottom: 12%;
+      width: 8px;
+      height: 8px;
+      margin-left: -4px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0 22%, rgba(255,181,78,0.98) 34%, rgba(255,102,25,0.82) 60%, rgba(255,102,25,0) 100%);
+      box-shadow: 0 0 12px rgba(255, 144, 50, 0.62);
+      opacity: 0;
+      transform: translate3d(0, 0, 0) scale(0.4);
+      animation: emberFloat 0.82s cubic-bezier(0.16, 0.78, 0.24, 1) forwards;
+      animation-delay: var(--delay, 0s);
+    }
 
     .game-card[data-rarity="common"] {
       --spark: rgba(164, 228, 255, 0.88);
@@ -691,10 +779,42 @@
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    @keyframes fadeOut {
-      0% { opacity: 1; transform: scale(1); filter: brightness(1); }
-      35% { opacity: 1; transform: translateY(-2px) scale(1.02); filter: brightness(1.18); }
-      100% { opacity: 0; transform: translateY(16px) scale(0.86); filter: brightness(0.7); }
+    @keyframes burnAway {
+      0% { opacity: 1; transform: scale(1) rotate(0deg); filter: brightness(1) saturate(1); }
+      24% { opacity: 1; transform: translateY(-1px) scale(1.02) rotate(-1.2deg); filter: brightness(1.2) saturate(1.2); }
+      58% { opacity: 0.96; transform: translateY(-6px) scale(1.04) rotate(1.4deg); filter: brightness(0.92) saturate(0.8); }
+      100% { opacity: 0; transform: translateY(-28px) scale(0.78) rotate(3deg); filter: brightness(0.22) saturate(0.25); }
+    }
+
+    @keyframes emberShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-1px); }
+      75% { transform: translateX(1px); }
+    }
+
+    @keyframes charTilt {
+      0% { filter: brightness(1) contrast(1) saturate(1); }
+      36% { filter: brightness(1.18) contrast(1.06) saturate(1.2); }
+      100% { filter: brightness(0.3) contrast(1.12) saturate(0.22); }
+    }
+
+    @keyframes burnMaskSweep {
+      0% { opacity: 0; transform: translateY(22%) scaleY(0.36); clip-path: inset(88% 0 0 0 round calc(var(--radius) + 4px)); }
+      20% { opacity: 0.88; }
+      62% { opacity: 0.96; }
+      100% { opacity: 1; transform: translateY(-4%) scaleY(1.08); clip-path: inset(-4% 0 0 0 round calc(var(--radius) + 4px)); }
+    }
+
+    @keyframes heatHazeLift {
+      0% { opacity: 0; transform: translateY(18px) scaleY(0.7); }
+      18% { opacity: 0.72; }
+      100% { opacity: 0; transform: translateY(-34px) scale(1.06, 1.24); }
+    }
+
+    @keyframes ashBloom {
+      0% { opacity: 0; transform: scale(0.6); }
+      30% { opacity: 0.78; }
+      100% { opacity: 0; transform: translateY(-18px) scale(1.26); }
     }
 
     @keyframes spawnFxReveal {
@@ -734,9 +854,15 @@
     }
 
     @keyframes flameRise {
-      0% { opacity: 0; transform: translateY(12px) scale(0.7); }
-      20% { opacity: 0.95; }
-      100% { opacity: 0; transform: translateY(-26px) scale(1.25); }
+      0% { opacity: 0; transform: translateY(14px) scale(0.58) rotate(-3deg); }
+      18% { opacity: 0.98; }
+      100% { opacity: 0; transform: translateY(-42px) scale(1.38) rotate(4deg); }
+    }
+
+    @keyframes emberFloat {
+      0% { opacity: 0; transform: rotate(var(--angle, 0deg)) translate3d(0, 0, 0) scale(0.32); }
+      18% { opacity: 1; }
+      100% { opacity: 0; transform: rotate(var(--angle, 0deg)) translate3d(var(--x, 0px), var(--y, -120px), 0) scale(1.08); }
     }
 
     @media (max-width: 780px) {
@@ -1098,6 +1224,30 @@
       `;
     }
 
+
+    function spawnBurnEmbers(card) {
+      const burnLayer = card.querySelector('.burn-layer');
+      if (!burnLayer) return;
+      burnLayer.querySelectorAll('.ember').forEach((ember) => ember.remove());
+      const emberCount = 14;
+      for (let i = 0; i < emberCount; i += 1) {
+        const ember = document.createElement('span');
+        ember.className = 'ember';
+        const angle = `${Math.round(Math.random() * 36 - 18)}deg`;
+        const x = `${Math.round(Math.random() * 120 - 60)}px`;
+        const y = `${-70 - Math.round(Math.random() * 92)}px`;
+        const delay = `${(Math.random() * 0.18).toFixed(2)}s`;
+        const size = `${5 + Math.round(Math.random() * 7)}px`;
+        ember.style.setProperty('--angle', angle);
+        ember.style.setProperty('--x', x);
+        ember.style.setProperty('--y', y);
+        ember.style.setProperty('--delay', delay);
+        ember.style.width = size;
+        ember.style.height = size;
+        burnLayer.appendChild(ember);
+      }
+    }
+
     function renderCodex() {
       codexGrid.innerHTML = '';
       RED_ITEMS.forEach((item) => {
@@ -1142,9 +1292,14 @@
             <div class="rarity-tag">TAC-SUPPLY</div>
           </div>
           <div class="burn-layer" aria-hidden="true">
+            <span class="burn-mask"></span>
+            <span class="heat-haze"></span>
+            <span class="ash-cloud"></span>
             <span class="flame f1"></span>
             <span class="flame f2"></span>
             <span class="flame f3"></span>
+            <span class="flame f4"></span>
+            <span class="flame f5"></span>
           </div>
         </div>
       `;
@@ -1167,7 +1322,8 @@
           card.dataset.state = 'gone';
           card.classList.add('removing');
           playBurnSound();
-          setTimeout(() => card.remove(), 420);
+          spawnBurnEmbers(card);
+          setTimeout(() => card.remove(), 820);
         }
       };
 
